@@ -1,12 +1,14 @@
 // main.js
 
 // initialize map
+//Center was spelt wrong
 var map = L.map("map", {
     center: [46.73, -92.107],
     zoom: 11
 });
 
 // add base layer
+//map was spelt wrong
 var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -30,6 +32,7 @@ request.then(function(values){
 	var precincts = JSON.parse(values);
 
 	//create a polygon layer for precincts
+    //total votes needed to be changed 
 	var precinctsLayer = L.geoJSON(precincts, {
 		    style: function (feature) {
 		    	var demVote = feature.properties.USPRSDFL;
@@ -43,19 +46,35 @@ request.then(function(values){
 		    	// console.log('totalVote:', totalVote);
 		    	// console.log('thirdPartyVote:', thirdPartyVote);
 		    	console.log('pct3rd:', thirdPartyPct);
-
-		    	// assign colors from the ColorBrewer yellow-green scale
+                var twoPartyVote = demVote+repVote
+                
+                var repPer = Math.round(repVote/totalVote*100)
+                var demPer = Math.round(demVote/totalVote*100)
+                console.log('percent:', demPer);
+		    	// assign colors from the ColorBrewer blue-red scale for the election
 		    	var fill;
 		    	// equal interval classification
-		    	// 7% or less
-		    	if (thirdPartyPct <= 7) {
-		    		fill = '#f7fcb9';
+		    	// 70% or greater
+		    	if (demPer >= 70) {
+		    		fill = '#0571b0';
 		    	}
-		    	// 11% or less
-		    	else if (thirdPartyPct <= 11) {
-		    		fill = '#addd8e';
+		    	// 65% or greater
+		    	else if (demPer >= 65) {
+		    		fill = '#92c5de';
+                }
+                // 60% or greater
+                else if (demPer >= 60){
+                    fill = '#f7f7f7'
 		    	}
-		    	// 12% or more
+                // 55% or greater
+                else if (demPer >= 55){
+                    fill = '#f4a582'
+                }
+                // 50% or greater
+                else if (demPer >= 50){
+                    fill = '#ca0020'
+                }
+		    	// whatever else
 		    	else {
 		    		fill = '#31a354';
 		    	}
